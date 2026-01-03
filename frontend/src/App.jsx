@@ -1,9 +1,57 @@
-export default function App() {
+import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
+import { ToastContainer } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
+import { AuthProvider, useAuth } from './contexts/AuthContext';
+import ProtectedRoute from './components/Auth/ProtectedRoute';
+import LoginPage from './pages/LoginPage';
+import AgentDashboard from './pages/AgentDashboard';
+import AdminDashboard from './pages/AdminDashboard';
+import NotFoundPage from './pages/NotFoundPage';
+
+// Composant pour la redirection automatique
+const HomeRedirect = () => {
+  const { user } = useAuth();
+
+  if (user?.role === 'admin' || user?.role === 'sub_admin') {
+    return <Navigate to="/admin" />;
+  }
+
+  return <Navigate to="/agent" />;
+};
+
+const AppContent = () => {
   return (
-    <div className="min-h-screen bg-black flex items-center justify-center">
-      <h1 className="text-white text-4xl font-bold">
-        SECURIS
-      </h1>
-    </div>
-  )
+    <Routes>
+      <Route path="/login" element={ <LoginPage /> } />
+
+      <Route path="/" element={ <HomeRedirect /> } />
+
+      <Route path="/agent" element={
+        <ProtectedRoute>
+          <AgentDashboard />
+        </ProtectedRoute>
+      } />
+
+      <Route path="/admin" element={
+        <ProtectedRoute requireAdmin>
+          <AdminDashboard />
+        </ProtectedRoute>
+      } />
+
+      <Route path="*" element={ <NotFoundPage /> } />
+    </Routes>
+  );
+};
+
+function App() {
+  return (
+    <Router>
+      <AuthProvider>
+        <AppContent />
+        <ToastContainer position="top-right" autoClose={ 3000 } />
+      </AuthProvider>
+    </Router>
+  );
 }
+
+export default App;

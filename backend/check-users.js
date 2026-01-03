@@ -11,9 +11,9 @@ async function check() {
 
         // Voir tous les utilisateurs
         const users = await client.query(`
-      SELECT id, employee_id, full_name, email, role, is_active
+      SELECT id, employee_id, full_name, email, user_role, is_active
       FROM users 
-      ORDER BY role, employee_id
+      ORDER BY user_role, employee_id
     `);
 
         console.log('👥 Utilisateurs dans la base:');
@@ -22,7 +22,7 @@ async function check() {
         users.rows.forEach((user, index) => {
             console.log(`${ index + 1 }. ${ user.employee_id } - ${ user.full_name }`);
             console.log(`   Email: ${ user.email }`);
-            console.log(`   Rôle: ${ user.role }`);
+            console.log(`   Rôle: ${ user.user_role }`);
             console.log(`   Actif: ${ user.is_active ? '✅' : '❌' }`);
             console.log('');
         });
