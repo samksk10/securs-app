@@ -3,6 +3,7 @@ import { ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import { AuthProvider, useAuth } from './contexts/AuthContext';
 import ProtectedRoute from './components/Auth/ProtectedRoute';
+import Navbar from './components/Layout/Navbar';
 import LoginPage from './pages/LoginPage';
 import AgentDashboard from './pages/AgentDashboard';
 import AdminDashboard from './pages/AdminDashboard';
@@ -20,26 +21,33 @@ const HomeRedirect = () => {
 };
 
 const AppContent = () => {
+  const { user } = useAuth();
+
   return (
-    <Routes>
-      <Route path="/login" element={ <LoginPage /> } />
+    <>
+      { user && <Navbar /> }
+      <div className={ user ? "pt-16" : "" }>
+        <Routes>
+          <Route path="/login" element={ <LoginPage /> } />
 
-      <Route path="/" element={ <HomeRedirect /> } />
+          <Route path="/" element={ <HomeRedirect /> } />
 
-      <Route path="/agent" element={
-        <ProtectedRoute>
-          <AgentDashboard />
-        </ProtectedRoute>
-      } />
+          <Route path="/agent" element={
+            <ProtectedRoute>
+              <AgentDashboard />
+            </ProtectedRoute>
+          } />
 
-      <Route path="/admin" element={
-        <ProtectedRoute requireAdmin>
-          <AdminDashboard />
-        </ProtectedRoute>
-      } />
+          <Route path="/admin" element={
+            <ProtectedRoute requireAdmin>
+              <AdminDashboard />
+            </ProtectedRoute>
+          } />
 
-      <Route path="*" element={ <NotFoundPage /> } />
-    </Routes>
+          <Route path="*" element={ <NotFoundPage /> } />
+        </Routes>
+      </div>
+    </>
   );
 };
 
