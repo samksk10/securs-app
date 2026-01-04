@@ -1,8 +1,5 @@
 import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
-import { ToastContainer } from 'react-toastify';
-import 'react-toastify/dist/ReactToastify.css';
 import { AuthProvider, useAuth } from './contexts/AuthContext';
-import ProtectedRoute from './components/Auth/ProtectedRoute';
 import Navbar from './components/Layout/Navbar';
 import LoginPage from './pages/LoginPage';
 import AgentDashboard from './pages/AgentDashboard';
@@ -20,43 +17,51 @@ const HomeRedirect = () => {
   return <Navigate to="/agent" />;
 };
 
-const AppContent = () => {
+// Layout avec Navbar conditionnelle
+const Layout = ({ children }) => {
   const { user } = useAuth();
 
   return (
     <>
       { user && <Navbar /> }
-      <div className={ user ? "pt-16" : "" }>
-        <Routes>
-          <Route path="/login" element={ <LoginPage /> } />
-
-          <Route path="/" element={ <HomeRedirect /> } />
-
-          <Route path="/agent" element={
-            <ProtectedRoute>
-              <AgentDashboard />
-            </ProtectedRoute>
-          } />
-
-          <Route path="/admin" element={
-            <ProtectedRoute requireAdmin>
-              <AdminDashboard />
-            </ProtectedRoute>
-          } />
-
-          <Route path="*" element={ <NotFoundPage /> } />
-        </Routes>
+      <div className={ user ? "pt-4" : "" }>
+        { children }
       </div>
     </>
   );
 };
 
+// Contenu principal
+const AppContent = () => {
+  return (
+    <Routes>
+      <Route path="/login" element={ <LoginPage /> } />
+
+      <Route path="/" element={ <HomeRedirect /> } />
+
+      <Route path="/agent" element={
+        <Layout>
+          <AgentDashboard />
+        </Layout>
+      } />
+
+      <Route path="/admin" element={
+        <Layout>
+          <AdminDashboard />
+        </Layout>
+      } />
+
+      <Route path="*" element={ <NotFoundPage /> } />
+    </Routes>
+  );
+};
+
+// App principale
 function App() {
   return (
     <Router>
       <AuthProvider>
         <AppContent />
-        <ToastContainer position="top-right" autoClose={ 3000 } />
       </AuthProvider>
     </Router>
   );

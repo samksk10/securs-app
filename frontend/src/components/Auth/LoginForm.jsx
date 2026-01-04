@@ -84,25 +84,7 @@ const LoginForm = () => {
                                         ) }
                                     </button>
                                 </form>
-
-                                {/* Identifiants de test */ }
                                 <div className="mt-5 pt-4 border-top">
-                                    <p className="text-muted small mb-3">
-                                        <i className="bi bi-info-circle me-2"></i>
-                                        <strong>Identifiants de test :</strong>
-                                    </p>
-                                    <div className="bg-light rounded p-3 small">
-                                        <div className="row">
-                                            <div className="col-6">
-                                                <p className="mb-1">Admin :</p>
-                                                <code className="d-block p-2 bg-white rounded border">ADMIN001 / admin</code>
-                                            </div>
-                                            <div className="col-6">
-                                                <p className="mb-1">Agent 1 :</p>
-                                                <code className="d-block p-2 bg-white rounded border">AGENT001 / agent001</code>
-                                            </div>
-                                        </div>
-                                    </div>
                                     <div className="mt-3 text-center">
                                         <span className="badge bg-info">
                                             <i className="bi bi-phone me-1"></i>
