@@ -16,3 +16,7 @@
 ## Identifiants test
 - Admin: ADMIN001 / admin
 - Agents: AGENT001 / agent001, AGENT002 / agent002,.
+
+## Session [04/01/2026]
+- passage et installation à bootstrap
+- suppression toutes les modules tailwind css
