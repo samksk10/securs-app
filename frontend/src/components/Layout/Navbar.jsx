@@ -1,34 +1,64 @@
 import { useAuth } from '../../contexts/AuthContext';
-import { LogOut, User } from 'lucide-react';
-import Button from '../Common/Button';
 
 const Navbar = () => {
     const { user, logout } = useAuth();
 
     return (
-        <nav className="bg-white shadow-sm border-b border-gray-200 px-6 py-4">
-            <div className="flex justify-between items-center">
-                <div className="flex items-center">
-                    <h1 className="text-xl font-bold text-gray-800">Sécuris</h1>
+        <nav className="navbar navbar-expand-lg navbar-securs sticky-top">
+            <div className="container-fluid">
+                {/* Logo */ }
+                <a className="navbar-brand fw-bold d-flex align-items-center" href="/">
+                    <div className="bg-securs-blue rounded-circle d-flex align-items-center justify-content-center me-2" style={ { width: '36px', height: '36px' } }>
+                        <i className="bi bi-shield-check text-white"></i>
+                    </div>
+                    Sécuris
+                </a>
+
+                {/* Bouton mobile */ }
+                <button
+                    className="navbar-toggler"
+                    type="button"
+                    data-bs-toggle="collapse"
+                    data-bs-target="#navbarContent"
+                >
+                    <span className="navbar-toggler-icon"></span>
+                </button>
+
+                {/* Contenu */ }
+                <div className="collapse navbar-collapse" id="navbarContent">
                     { user && (
-                        <span className="ml-4 px-3 py-1 text-sm rounded-full bg-blue-100 text-blue-800">
-                            { user.role === 'admin' ? 'Administrateur' : 'Agent' }
-                        </span>
+                        <div className="navbar-nav ms-auto align-items-center">
+                            {/* Info utilisateur */ }
+                            <div className="nav-item me-3">
+                                <div className="d-flex align-items-center">
+                                    <div className="bg-primary bg-opacity-10 rounded-circle d-flex align-items-center justify-content-center me-2" style={ { width: '40px', height: '40px' } }>
+                                        <i className="bi bi-person text-primary"></i>
+                                    </div>
+                                    <div>
+                                        <div className="fw-medium">{ user.fullName }</div>
+                                        <div className="small text-muted">
+                                            <span className={ `badge ${ user.role === 'admin' ? 'bg-purple' : 'bg-primary' }` }>
+                                                { user.role === 'admin' ? 'Administrateur' : 'Agent' }
+                                            </span>
+                                            <span className="ms-2">{ user.employeeId }</span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            {/* Bouton déconnexion */ }
+                            <div className="nav-item">
+                                <button
+                                    onClick={ logout }
+                                    className="btn btn-outline-danger btn-sm"
+                                >
+                                    <i className="bi bi-box-arrow-right me-1"></i>
+                                    Déconnexion
+                                </button>
+                            </div>
+                        </div>
                     ) }
                 </div>
-
-                { user && (
-                    <div className="flex items-center space-x-4">
-                        <div className="flex items-center text-gray-700">
-                            <User className="w-5 h-5 mr-2" />
-                            <span>{ user.fullName }</span>
-                        </div>
-                        <Button onClick={ logout } variant="secondary">
-                            <LogOut className="w-4 h-4 mr-2" />
-                            Déconnexion
-                        </Button>
-                    </div>
-                ) }
             </div>
         </nav>
     );
