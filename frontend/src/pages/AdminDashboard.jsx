@@ -1,5 +1,6 @@
 import { useAuth } from '../contexts/AuthContext';
 import { Users, Clock, AlertTriangle, Download } from 'lucide-react';
+import QRGenerator from '../components/Admin/QRGenerator';
 
 const AdminDashboard = () => {
     const { user } = useAuth();
@@ -89,6 +90,10 @@ const AdminDashboard = () => {
                         </div>
                     </div>
                 </div>
+            </div>
+
+            <div className="mb-4">
+                <QRGenerator />
             </div>
         </div>
     );

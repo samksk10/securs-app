@@ -1,5 +1,6 @@
 import { useAuth } from '../contexts/AuthContext';
 import { Clock, MapPin, AlertCircle, CheckCircle } from 'lucide-react';
+import QRScanner from '../components/Agent/QRScanner';
 
 const AgentDashboard = () => {
     const { user } = useAuth();
@@ -63,10 +64,12 @@ const AgentDashboard = () => {
                     <div className="card card-securs p-3">
                         <h2 className="h5 fw-bold mb-3">Actions rapides</h2>
                         <div className="d-grid gap-2">
-                            <button type="button" className="btn btn-securs-blue w-100 py-3 d-flex align-items-center justify-content-center">
-                                <MapPin size={ 18 } className="me-2" />
-                                Scanner QR Code pour pointer
-                            </button>
+                            <QRScanner onScanComplete={ (result) => {
+                                console.log('Scan result:', result);
+                                if (result.valid) {
+                                    alert('QR code valide! Procédez à la vérification faciale.');
+                                }
+                            } } />
                             <button type="button" className="btn btn-warning w-100 py-3 d-flex align-items-center justify-content-center">
                                 <AlertCircle size={ 18 } className="me-2" />
                                 Signaler un incident

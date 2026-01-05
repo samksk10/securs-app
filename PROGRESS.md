@@ -20,3 +20,11 @@
 ## Session [04/01/2026]
 - passage et installation à bootstrap
 - suppression toutes les modules tailwind css
+  ✅ Backend auth API fonctionnelle
+- ✅ Frontend React avec routing
+- ✅ Connexion BDD PostgreSQL
+- ✅ Résolution CORS (proxy Vite)
+  ✅ Résolution tailwind par bootstrap.
+
+## Session [05/01/2026]
+- mis en place du système QR Code - essentielle pour le pointage des agents.
