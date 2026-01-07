@@ -12,7 +12,6 @@ const checkinRoutes = require('./routes/checkin.routes');
 const incidentRoutes = require('./routes/incident.routes');
 const adminRoutes = require('./routes/admin.routes');
 const faceRoutes = require('./routes/face.routes');
-const checkinRoutes = require('./routes/checkin.routes');
 
 const app = express();
 
@@ -36,7 +35,6 @@ app.use('/api/checkin', checkinRoutes);
 app.use('/api/incidents', incidentRoutes);
 app.use('/api/admin', adminRoutes);
 app.use('/api/face', faceRoutes);
-app.use('/api/checkin', checkinRoutes);
 
 // Health check
 app.get('/api/health', (req, res) => {

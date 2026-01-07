@@ -1,8 +1,5 @@
-// qr.js - À implémenter plus tard
-export default function Placeholder() {
-  return null;
-}
 import api from './api';
+
 
 export const qrService = {
   // Générer le QR code du jour (admin seulement)
@@ -22,6 +19,10 @@ export const qrService = {
       const response = await api.get('/qr/today');
       return response.data;
     } catch (error) {
+      // Si aucun QR actif pour aujourd'hui -> backend renvoie 404
+      if (error.response?.status === 404) {
+        return { success: false, error: 'Aucun QR code actif pour aujourd\'hui' };
+      }
       console.error('Erreur récupération QR:', error);
       throw error;
     }

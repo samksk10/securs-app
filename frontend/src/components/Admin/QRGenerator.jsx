@@ -23,9 +23,10 @@ const QRGenerator = () => {
                 setTodayQR(result.data);
             } else {
                 setTodayQR(null);
+                if (result.error) setError(result.error);
             }
         } catch (err) {
-            setError('Impossible de charger le QR code');
+            setError('Erreur de connexion au serveur');
             setTodayQR(null);
         } finally {
             setLoading(false);
