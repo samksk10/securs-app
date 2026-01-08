@@ -39,7 +39,7 @@ const LoginForm = () => {
                                 {/* Formulaire */ }
                                 <form onSubmit={ handleSubmit }>
                                     <div className="mb-4">
-                                        <label htmlFor="employeeId" className="form-label fw-medium">ID Employé</label>
+                                        <label htmlFor="employeeId" className="form-label fw-medium">ID UTILISATEUR</label>
                                         <input
                                             type="text"
                                             className="form-control form-control-lg"

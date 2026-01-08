@@ -1,12 +1,52 @@
 const { Client } = require('pg');
-const fs = require('fs');
-const path = require('path');
 
-// Enregistrer la photo de référence d'un agent
+/**
+ * Création d'un client PostgreSQL
+ */
+const getClient = async () => {
+    const client = new Client({
+        connectionString: process.env.DATABASE_URL
+    });
+    await client.connect();
+    return client;
+};
+
+/**
+ * Vérifier si l'agent a déjà enregistré son visage
+ */
+const checkFaceRegistered = async (req, res) => {
+    try {
+        const userId = req.user.id;
+        const client = await getClient();
+
+        const result = await client.query(
+            `SELECT face_encoding IS NOT NULL AS has_face FROM users WHERE id = $1`,
+            [ userId ]
+        );
+
+        await client.end();
+
+        res.json({
+            success: true,
+            hasFaceRegistered: result.rows[ 0 ]?.has_face || false
+        });
+
+    } catch (error) {
+        console.error('Erreur vérification visage:', error);
+        res.status(500).json({
+            success: false,
+            error: 'Erreur lors de la vérification du visage'
+        });
+    }
+};
+
+/**
+ * Enregistrer le visage de référence de l'agent
+ */
 const registerFace = async (req, res) => {
     try {
         const userId = req.user.id;
-        const { faceData } = req.body; // Base64 de la photo
+        const { faceData } = req.body;
 
         if (!faceData) {
             return res.status(400).json({
@@ -15,15 +55,13 @@ const registerFace = async (req, res) => {
             });
         }
 
-        const client = new Client({
-            connectionString: process.env.DATABASE_URL
-        });
+        const client = await getClient();
 
-        await client.connect();
-
-        // Sauvegarder l'encodage facial
         await client.query(
-            `UPDATE users SET face_encoding = $1, updated_at = NOW() WHERE id = $2`,
+            `UPDATE users
+       SET face_encoding = $1,
+           updated_at = NOW()
+       WHERE id = $2`,
             [ faceData, userId ]
         );
 
@@ -38,16 +76,19 @@ const registerFace = async (req, res) => {
         console.error('Erreur enregistrement visage:', error);
         res.status(500).json({
             success: false,
-            error: 'Erreur lors de l\'enregistrement du visage'
+            error: 'Erreur lors de l’enregistrement du visage'
         });
     }
 };
 
-// Vérifier la correspondance faciale (version simplifiée)
+/**
+ * Vérifier la correspondance faciale (simulation contrôlée)
+ * ⚠️ À remplacer par une vraie librairie en production
+ */
 const verifyFace = async (req, res) => {
     try {
         const userId = req.user.id;
-        const { faceData } = req.body; // Photo prise lors du pointage
+        const { faceData } = req.body;
 
         if (!faceData) {
             return res.status(400).json({
@@ -56,19 +97,14 @@ const verifyFace = async (req, res) => {
             });
         }
 
-        const client = new Client({
-            connectionString: process.env.DATABASE_URL
-        });
+        const client = await getClient();
 
-        await client.connect();
-
-        // Récupérer l'encodage facial de référence
-        const userResult = await client.query(
+        const result = await client.query(
             `SELECT face_encoding FROM users WHERE id = $1`,
             [ userId ]
         );
 
-        if (userResult.rows.length === 0 || !userResult.rows[ 0 ].face_encoding) {
+        if (result.rows.length === 0 || !result.rows[ 0 ].face_encoding) {
             await client.end();
             return res.status(404).json({
                 success: false,
@@ -76,29 +112,29 @@ const verifyFace = async (req, res) => {
             });
         }
 
-        const storedFaceData = userResult.rows[ 0 ].face_encoding;
+        const storedFaceData = result.rows[ 0 ].face_encoding;
 
-        // SIMULATION: Pour l'instant, on simule une vérification réussie
-        // En production, utiliser une librairie de comparaison d'images
-        const matchConfidence = 0.85; // Simulation: 85% de correspondance
-
-        // Logique simplifiée: comparer la taille des données
+        /**
+         * Simulation de similarité
+         * Plus les tailles sont proches, plus le score est élevé
+         */
         const similarityScore = Math.min(
             faceData.length / storedFaceData.length,
             storedFaceData.length / faceData.length
         );
 
-        const isMatch = similarityScore > 0.7; // Seuil à 70%
+        const THRESHOLD = 0.7;
+        const isMatch = similarityScore >= THRESHOLD;
 
         await client.end();
 
         res.json({
             success: true,
             match: isMatch,
-            confidence: isMatch ? matchConfidence : 0.3,
+            confidence: Number(similarityScore.toFixed(2)),
             message: isMatch
                 ? 'Vérification faciale réussie'
-                : 'La photo ne correspond pas à l\'agent'
+                : 'Le visage ne correspond pas à l’agent'
         });
 
     } catch (error) {
@@ -110,40 +146,8 @@ const verifyFace = async (req, res) => {
     }
 };
 
-// Vérifier si l'agent a déjà enregistré son visage
-const checkFaceRegistered = async (req, res) => {
-    try {
-        const userId = req.user.id;
-
-        const client = new Client({
-            connectionString: process.env.DATABASE_URL
-        });
-
-        await client.connect();
-
-        const result = await client.query(
-            `SELECT face_encoding IS NOT NULL as has_face FROM users WHERE id = $1`,
-            [ userId ]
-        );
-
-        await client.end();
-
-        res.json({
-            success: true,
-            hasFaceRegistered: result.rows[ 0 ]?.has_face || false
-        });
-
-    } catch (error) {
-        console.error('Erreur vérification enregistrement:', error);
-        res.status(500).json({
-            success: false,
-            error: 'Erreur lors de la vérification'
-        });
-    }
-};
-
 module.exports = {
+    checkFaceRegistered,
     registerFace,
-    verifyFace,
-    checkFaceRegistered
+    verifyFace
 };
