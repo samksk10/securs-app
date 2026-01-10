@@ -1,9 +1,44 @@
 import { useAuth } from '../contexts/AuthContext';
-import { Clock, MapPin, AlertCircle, CheckCircle } from 'lucide-react';
+import { Clock, AlertCircle, CheckCircle } from 'lucide-react';
 import QRScanner from '../components/Agent/QRScanner';
+import CheckInFlow from '../components/Agent/CheckInFlow';
+import { useEffect, useState } from 'react';
+import axios from 'axios';
 
 const AgentDashboard = () => {
     const { user } = useAuth();
+    const [ apiError, setApiError ] = useState(null);
+
+    // Configure axios baseURL and catch errors globally to surface them in the UI
+    useEffect(() => {
+        let baseURL = 'http://localhost:5000';
+        try {
+            if (typeof window !== 'undefined' && window?.REACT_APP_API_BASE_URL) {
+                baseURL = window.REACT_APP_API_BASE_URL;
+            } else {
+                // Accès direct à import.meta dans un try/catch pour éviter l'usage illégal de "typeof import"
+                if (import.meta?.env?.VITE_API_BASE_URL) {
+                    baseURL = import.meta.env.VITE_API_BASE_URL;
+                }
+            }
+        } catch (e) {
+            // ignore - fallback to localhost
+        }
+
+        axios.defaults.baseURL = baseURL;
+
+        const interceptor = axios.interceptors.response.use(
+            (response) => response,
+            (error) => {
+                console.error('API Error:', error);
+                const status = error?.response?.status;
+                const msg = error?.response?.data?.message || error?.message || 'Erreur inconnue';
+                setApiError((status ? `${ status } — ` : '') + msg);
+                return Promise.reject(error);
+            }
+        );
+        return () => axios.interceptors.response.eject(interceptor);
+    }, []);
 
     return (
         <div className="container py-4">
@@ -11,6 +46,17 @@ const AgentDashboard = () => {
                 <h1 className="h3 fw-bold text-dark">Tableau de bord Agent</h1>
                 <p className="text-muted mt-2">Bienvenue, { user?.fullName }</p>
             </div>
+
+            {/* Affiche un panneau d'erreur API utile pour débogage */ }
+            { apiError && (
+                <div className="alert alert-danger d-flex align-items-center justify-content-between" role="alert">
+                    <div>
+                        <strong>Erreur API :</strong> { apiError }
+                        <div className="small text-muted mt-1">Vérifiez que le backend est démarré et que REACT_APP_API_BASE_URL est correct.</div>
+                    </div>
+                    <button type="button" className="btn btn-sm btn-light ms-3" onClick={ () => setApiError(null) }>Fermer</button>
+                </div>
+            ) }
 
             <div className="row g-3 mb-4">
                 <div className="col-12 col-md-6 col-lg-4">
@@ -57,6 +103,11 @@ const AgentDashboard = () => {
                         </div>
                     </div>
                 </div>
+            </div>
+
+            {/* Ajout demandé : affichage du flux de pointage */ }
+            <div className="mb-5">
+                <CheckInFlow />
             </div>
 
             <div className="row g-3">
