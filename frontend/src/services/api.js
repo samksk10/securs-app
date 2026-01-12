@@ -35,5 +35,42 @@ api.interceptors.response.use(
         return Promise.reject(error);
     }
 );
+// Ajouter ces fonctions
+export const getDetailedHistory = async (queryParams = '') => {
+    try {
+        const response = await fetch(`/api/checkins/detailed-history?${ queryParams }`, {
+            headers: {
+                'Authorization': `Bearer ${ localStorage.getItem('token') }`
+            }
+        });
+        return await response.json();
+    } catch (error) {
+        console.error('Erreur API historique:', error);
+        throw error;
+    }
+};
 
+export const exportCheckInsToExcel = async (filters = {}) => {
+    try {
+        const queryParams = new URLSearchParams(filters).toString();
+        const response = await fetch(`/api/checkins/export?${ queryParams }`, {
+            headers: {
+                'Authorization': `Bearer ${ localStorage.getItem('token') }`
+            }
+        });
+
+        if (response.ok) {
+            const blob = await response.blob();
+            const url = window.URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = `pointages-export-${ new Date().toISOString().split('T')[ 0 ] }.xlsx`;
+            document.body.appendChild(a);
+            a.click();
+            a.remove();
+        }
+    } catch (error) {
+        console.error('Erreur export:', error);
+    }
+};
 export default api;
