@@ -1,5 +1,6 @@
 import { useState } from 'react';
-import { Tabs, Tab } from 'react-bootstrap';
+import Tabs from "react-bootstrap/Tabs";
+import Tab from "react-bootstrap/Tab";
 import { useAuth } from '../contexts/AuthContext';
 import { Users, Clock, AlertTriangle, Download } from 'lucide-react';
 import QRGenerator from '../components/Admin/QRGenerator';
