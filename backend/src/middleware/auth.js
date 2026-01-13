@@ -13,6 +13,12 @@ const authMiddleware = async (req, res, next) => {
         // Vérifier le token
         const decoded = jwt.verify(token, process.env.JWT_SECRET);
 
+        // Supporter plusieurs noms de claim pour l'id (userId / id / user_id)
+        const userId = decoded.userId || decoded.id || decoded.user_id;
+        if (!userId) {
+            return res.status(401).json({ error: 'Token invalide: user id manquant' });
+        }
+
         // Trouver l'utilisateur
         const client = new Client({
             connectionString: process.env.DATABASE_URL
@@ -22,7 +28,7 @@ const authMiddleware = async (req, res, next) => {
 
         const userResult = await client.query(
             'SELECT id, employee_id, full_name, email, user_role, is_active FROM users WHERE id = $1 AND is_active = true',
-            [ decoded.userId ]
+            [ userId ]
         );
 
         await client.end();
@@ -33,13 +39,13 @@ const authMiddleware = async (req, res, next) => {
             return res.status(401).json({ error: 'Utilisateur non trouvé' });
         }
 
-        // Ajouter l'utilisateur à la requête
+        // Normaliser le rôle en minuscules et exposer des champs cohérents
         req.user = {
             id: user.id,
             employeeId: user.employee_id,
             fullName: user.full_name,
             email: user.email,
-            userRole: user.user_role,
+            userRole: user.user_role ? user.user_role.toLowerCase() : null,
             isActive: user.is_active
         };
 
@@ -51,14 +57,16 @@ const authMiddleware = async (req, res, next) => {
 };
 
 const requireAdmin = (req, res, next) => {
-    if (req.user.userRole !== 'admin' && req.user.userRole !== 'sub_admin') {
+    const role = (req.user?.userRole || '').toLowerCase();
+    if (role !== 'admin' && role !== 'sub_admin') {
         return res.status(403).json({ error: 'Accès administrateur requis' });
     }
     next();
 };
 
 const requireSuperAdmin = (req, res, next) => {
-    if (req.user.userRole !== 'admin') {
+    const role = (req.user?.userRole || '').toLowerCase();
+    if (role !== 'admin') {
         return res.status(403).json({ error: 'Accès administrateur principal requis' });
     }
     next();

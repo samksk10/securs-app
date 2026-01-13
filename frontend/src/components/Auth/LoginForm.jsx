@@ -1,11 +1,39 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
+import { useNavigate, useLocation } from 'react-router-dom';
 import { useAuth } from '../../contexts/AuthContext';
 
 const LoginForm = () => {
     const [ employeeId, setEmployeeId ] = useState('');
     const [ password, setPassword ] = useState('');
     const [ loading, setLoading ] = useState(false);
-    const { login } = useAuth();
+    const { login, user, logout } = useAuth();
+    const navigate = useNavigate();
+    const location = useLocation();
+
+    // Détermine si on est sur la page admin (ex: /admin/login) ou agent
+    const expectedRole = location.pathname.includes('/admin') ? 'admin' : 'agent';
+
+    useEffect(() => {
+        // Si un utilisateur est déjà connecté, redirige s'il correspond à la page;
+        // sinon purge le token pour éviter "auto-login" sur la mauvaise page.
+        if (!user) return;
+        const role = user.userRole || user.role || user.user_role;
+        if (!role) return;
+        if (expectedRole === 'admin') {
+            if (role === 'admin' || role === 'sub_admin') {
+                navigate('/admin/dashboard', { replace: true });
+            } else {
+                logout();
+            }
+        } else {
+            if (role === 'admin' || role === 'sub_admin') {
+                // admin already logged in -> keep admin session but avoid auto-redirect to agent area
+                logout();
+            } else {
+                navigate('/agent/dashboard', { replace: true });
+            }
+        }
+    }, [ user, expectedRole, navigate ]);
 
     const handleSubmit = async (e) => {
         e.preventDefault();
@@ -15,6 +43,32 @@ const LoginForm = () => {
 
         if (!result.success) {
             alert(result.error || 'Erreur de connexion');
+            setLoading(false);
+            return;
+        }
+
+        const role = result.user?.userRole || result.user?.role || result.user?.user_role;
+
+        // Si le rôle ne correspond pas à la page de login actuelle, annule et purge le token
+        if (expectedRole === 'admin' && !(role === 'admin' || role === 'sub_admin')) {
+            logout();
+            alert('Accès réservé aux administrateurs. Veuillez utiliser la page appropriée.');
+            setLoading(false);
+            return;
+        }
+
+        if (expectedRole === 'agent' && (role === 'admin' || role === 'sub_admin')) {
+            logout();
+            alert('Vous êtes connecté en tant qu\'administrateur. Veuillez utiliser la page administrateur.');
+            setLoading(false);
+            return;
+        }
+
+        // Redirections selon rôle
+        if (role === 'admin' || role === 'sub_admin') {
+            navigate('/admin/dashboard');
+        } else {
+            navigate('/agent/dashboard');
         }
 
         setLoading(false);
