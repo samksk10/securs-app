@@ -41,8 +41,8 @@ const Navbar = () => {
                                     <div>
                                         <div className="fw-medium">{ user.fullName }</div>
                                         <div>
-                                            <span className={ `badge ${ user.role === 'admin' ? 'bg-purple' : 'bg-primary' } me-2` }>
-                                                { user.role === 'admin' ? 'Admin' : 'Agent' }
+                                            <span className={ `badge ${ userRole === 'admin' ? 'bg-purple' : 'bg-primary' } me-2` }>
+                                                { userRole === 'admin' ? 'Admin' : 'Agent' }
                                             </span>
                                             <small className="text-muted">{ user.employeeId }</small>
                                         </div>

@@ -17,7 +17,10 @@ const AgentDashboard = () => {
                 baseURL = window.REACT_APP_API_BASE_URL;
             } else {
                 // Accès direct à import.meta dans un try/catch pour éviter l'usage illégal de "typeof import"
-                if (import.meta?.env?.VITE_API_BASE_URL) {
+                if (process.env.REACT_APP_API_BASE_URL) {
+                    baseURL = process.env.REACT_APP_API_BASE_URL;
+                }
+                else if (import.meta?.env?.VITE_API_BASE_URL) {
                     baseURL = import.meta.env.VITE_API_BASE_URL;
                 }
             }

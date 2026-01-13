@@ -45,7 +45,7 @@ const authMiddleware = async (req, res, next) => {
             employeeId: user.employee_id,
             fullName: user.full_name,
             email: user.email,
-            userRole: user.user_role ? user.user_role.toLowerCase() : null,
+            role: user.user_role ? user.user_role.toLowerCase() : null, // ← changer userRole en role
             isActive: user.is_active
         };
 
