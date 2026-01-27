@@ -12,6 +12,9 @@ router.get('/history', authMiddleware, checkinController.getCheckInHistory);
 // AGENT: Statistiques
 router.get('/stats', authMiddleware, checkinController.getCheckInStats);
 
+// ADMIN: Récupérer l'historique détaillé avec pagination
+router.get('/detailed-history', authMiddleware, requireAdmin, checkinController.getDetailedHistory);
+
 // ADMIN: Récupérer tous les pointages
 router.get('/all', authMiddleware, requireAdmin, checkinController.getAllCheckIns);
 

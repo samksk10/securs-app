@@ -25,7 +25,7 @@ const DetailedHistory = () => {
     useEffect(() => {
         const loadAgents = async () => {
             try {
-                const response = await fetch('/api/users/agents', {
+                const response = await fetch('http://localhost:5000/api/users/agents', {
                     headers: {
                         'Authorization': `Bearer ${ localStorage.getItem('token') }`
                     }

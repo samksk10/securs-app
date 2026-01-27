@@ -339,10 +339,109 @@ const getAllCheckIns = async (req, res) => {
     }
 };
 
+// ADMIN: Récupérer l'historique détaillé avec pagination
+const getDetailedHistory = async (req, res) => {
+    try {
+        const { startDate, endDate, agentId, page = 1, limit = 50 } = req.query;
+
+        const client = new Client({
+            connectionString: process.env.DATABASE_URL
+        });
+
+        await client.connect();
+
+        // Calcul de l'offset pour la pagination
+        const offset = (parseInt(page) - 1) * parseInt(limit);
+
+        let query = `
+      SELECT 
+        c.id,
+        c.check_in_time,
+        c.location,
+        c.face_match_confidence,
+        c.status,
+        c.photo_url,
+        u.id as user_id,
+        u.employee_id,
+        u.full_name,
+        u.email,
+        u.user_role,
+        q.date as qr_date,
+        q.token as qr_token,
+        v.full_name as validated_by_name
+      FROM check_ins c
+      JOIN users u ON c.user_id = u.id
+      JOIN qr_codes q ON c.qr_code_id = q.id
+      LEFT JOIN users v ON c.validated_by_id = v.id
+      WHERE 1=1
+    `;
+
+        const params = [];
+        let paramCount = 0;
+
+        if (startDate) {
+            paramCount++;
+            query += ` AND DATE(c.check_in_time) >= $${ paramCount }`;
+            params.push(startDate);
+        }
+
+        if (endDate) {
+            paramCount++;
+            query += ` AND DATE(c.check_in_time) <= $${ paramCount }`;
+            params.push(endDate);
+        }
+
+        if (agentId) {
+            paramCount++;
+            query += ` AND c.user_id = $${ paramCount }`;
+            params.push(agentId);
+        }
+
+        // Requête pour le total
+        const countQuery = query.replace(
+            /SELECT[\s\S]*?FROM/,
+            'SELECT COUNT(*) as total FROM'
+        );
+
+        const countResult = await client.query(countQuery, params);
+        const total = parseInt(countResult.rows[ 0 ].total);
+        const totalPages = Math.ceil(total / parseInt(limit));
+
+        // Ajout de la pagination et du tri
+        query += ` ORDER BY c.check_in_time DESC LIMIT $${ paramCount + 1 } OFFSET $${ paramCount + 2 }`;
+        params.push(parseInt(limit));
+        params.push(offset);
+
+        const result = await client.query(query, params);
+
+        await client.end();
+
+        res.json({
+            success: true,
+            data: result.rows,
+            pagination: {
+                page: parseInt(page),
+                limit: parseInt(limit),
+                total: total,
+                totalPages: totalPages,
+                count: result.rows.length
+            }
+        });
+
+    } catch (error) {
+        console.error('Erreur récupération historique détaillé:', error);
+        res.status(500).json({
+            success: false,
+            error: 'Erreur lors de la récupération de l\'historique détaillé'
+        });
+    }
+};
+
 module.exports = {
     createCheckIn,
     getCheckInHistory,
     getCheckInStats,
     updateCheckInStatus,
-    getAllCheckIns
+    getAllCheckIns,
+    getDetailedHistory
 };

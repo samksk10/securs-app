@@ -38,7 +38,7 @@ api.interceptors.response.use(
 // Ajouter ces fonctions
 export const getDetailedHistory = async (queryParams = '') => {
     try {
-        const response = await fetch(`/api/checkins/detailed-history?${ queryParams }`, {
+        const response = await fetch(`${ API_URL }/checkins/detailed-history?${ queryParams }`, {
             headers: {
                 'Authorization': `Bearer ${ localStorage.getItem('token') }`
             }
@@ -53,7 +53,7 @@ export const getDetailedHistory = async (queryParams = '') => {
 export const exportCheckInsToExcel = async (filters = {}) => {
     try {
         const queryParams = new URLSearchParams(filters).toString();
-        const response = await fetch(`/api/checkins/export?${ queryParams }`, {
+        const response = await fetch(`${ API_URL }/checkins/export?${ queryParams }`, {
             headers: {
                 'Authorization': `Bearer ${ localStorage.getItem('token') }`
             }
