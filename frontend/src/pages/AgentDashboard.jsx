@@ -1,4 +1,5 @@
 import { useAuth } from '../contexts/AuthContext';
+import { useNavigate } from 'react-router-dom';
 import { Clock, AlertCircle, CheckCircle } from 'lucide-react';
 import QRScanner from '../components/Agent/QRScanner';
 import CheckInFlow from '../components/Agent/CheckInFlow';
@@ -6,8 +7,26 @@ import { useEffect, useState } from 'react';
 import axios from 'axios';
 
 const AgentDashboard = () => {
-    const { user } = useAuth();
+    const { user, isAuthenticated } = useAuth();
+    const navigate = useNavigate();
     const [ apiError, setApiError ] = useState(null);
+
+    // Rediriger vers login si l'utilisateur se déconnecte
+    useEffect(() => {
+        if (!isAuthenticated) {
+            navigate('/login', { replace: true });
+        }
+    }, [ isAuthenticated, navigate ]);
+
+    // Écouter l'événement de déconnexion
+    useEffect(() => {
+        const handleLogout = () => {
+            navigate('/login', { replace: true });
+        };
+
+        window.addEventListener('userLogout', handleLogout);
+        return () => window.removeEventListener('userLogout', handleLogout);
+    }, [ navigate ]);
 
     // Configure axios baseURL and catch errors globally to surface them in the UI
     useEffect(() => {

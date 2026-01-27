@@ -1,4 +1,4 @@
-import React, { createContext, useState, useContext, useEffect } from 'react';
+import React, { createContext, useState, useContext, useEffect, useCallback } from 'react';
 import { authService } from '../services/auth';
 
 const AuthContext = createContext({});
@@ -31,10 +31,12 @@ export const AuthProvider = ({ children }) => {
         }
     };
 
-    const logout = () => {
+    const logout = useCallback(() => {
         authService.logout();
         setUser(null);
-    };
+        // Dispatch custom event pour la redirection globale
+        window.dispatchEvent(new CustomEvent('userLogout'));
+    }, []);
 
     const value = {
         user,

@@ -44,6 +44,8 @@ const LoginForm = () => {
                                             type="text"
                                             className="form-control form-control-lg"
                                             id="employeeId"
+                                            name="employeeId"
+                                            autoComplete="username"
                                             placeholder="ADMIN001"
                                             value={ employeeId }
                                             onChange={ (e) => setEmployeeId(e.target.value.toUpperCase()) }
@@ -58,6 +60,8 @@ const LoginForm = () => {
                                             type="password"
                                             className="form-control form-control-lg"
                                             id="password"
+                                            name="password"
+                                            autoComplete="current-password"
                                             placeholder="••••••••"
                                             value={ password }
                                             onChange={ (e) => setPassword(e.target.value) }

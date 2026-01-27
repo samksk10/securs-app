@@ -1,11 +1,15 @@
 import { useAuth } from '../../contexts/AuthContext';
+import { useNavigate } from 'react-router-dom';
 
 const Navbar = () => {
     const { user, logout } = useAuth();
+    const navigate = useNavigate();
 
     const handleLogout = () => {
         if (window.confirm('Voulez-vous vraiment vous déconnecter ?')) {
             logout();
+            // Rediriger vers la page de login après la déconnexion
+            navigate('/login', { replace: true });
         }
     };
 

@@ -1,4 +1,5 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
 import Tabs from "react-bootstrap/Tabs";
 import Tab from "react-bootstrap/Tab";
 import { useAuth } from '../contexts/AuthContext';
@@ -7,8 +8,26 @@ import QRGenerator from '../components/Admin/QRGenerator';
 import DetailedHistory from '../components/Admin/DetailedHistory';
 
 const AdminDashboard = () => {
-    const { user } = useAuth();
+    const { user, isAuthenticated } = useAuth();
+    const navigate = useNavigate();
     const [ activeTab, setActiveTab ] = useState('dashboard');
+
+    // Rediriger vers login si l'utilisateur se déconnecte
+    useEffect(() => {
+        if (!isAuthenticated) {
+            navigate('/login', { replace: true });
+        }
+    }, [ isAuthenticated, navigate ]);
+
+    // Écouter l'événement de déconnexion
+    useEffect(() => {
+        const handleLogout = () => {
+            navigate('/login', { replace: true });
+        };
+
+        window.addEventListener('userLogout', handleLogout);
+        return () => window.removeEventListener('userLogout', handleLogout);
+    }, [ navigate ]);
 
     const stats = [
         { label: "Agents actifs", value: "3", icon: Users, color: "primary" },
