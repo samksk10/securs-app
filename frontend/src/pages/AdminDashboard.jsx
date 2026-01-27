@@ -5,6 +5,7 @@ import { useAuth } from '../contexts/AuthContext';
 import { Users, Clock, AlertTriangle, Download } from 'lucide-react';
 import QRGenerator from '../components/Admin/QRGenerator';
 import DetailedHistory from '../components/Admin/DetailedHistory';
+
 const AdminDashboard = () => {
     const { user } = useAuth();
     const [ activeTab, setActiveTab ] = useState('dashboard');

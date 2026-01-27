@@ -22,14 +22,6 @@ api.interceptors.request.use(
         return Promise.reject(error);
     }
 );
-// Dans api.js
-api.interceptors.request.use(config => {
-    const token = localStorage.getItem('token');
-    if (token) {
-        config.headers.Authorization = `Bearer ${ token }`;
-    }
-    return config;
-});
 
 // Interceptor pour gérer les erreurs
 api.interceptors.response.use(

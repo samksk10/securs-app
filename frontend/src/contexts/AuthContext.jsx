@@ -41,7 +41,7 @@ export const AuthProvider = ({ children }) => {
         loading,
         login,
         logout,
-        isAuthenticated: !!user && user.isActive !== false, // ← vérifier isActive
+        isAuthenticated: !!user,
         isAdmin: user?.role === 'admin' || user?.role === 'sub_admin',
         isAgent: user?.role === 'agent'
     };
