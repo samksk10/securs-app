@@ -1,5 +1,6 @@
 import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
 import { AuthProvider, useAuth } from './contexts/AuthContext';
+import ProtectedRoute from './components/Auth/ProtectedRoute';
 import Navbar from './components/Layout/Navbar';
 import LoginPage from './pages/LoginPage';
 import AgentDashboard from './pages/AgentDashboard';
@@ -40,15 +41,19 @@ const AppContent = () => {
       <Route path="/" element={ <HomeRedirect /> } />
 
       <Route path="/agent" element={
-        <Layout>
-          <AgentDashboard />
-        </Layout>
+        <ProtectedRoute>
+          <Layout>
+            <AgentDashboard />
+          </Layout>
+        </ProtectedRoute>
       } />
 
       <Route path="/admin" element={
-        <Layout>
-          <AdminDashboard />
-        </Layout>
+        <ProtectedRoute requireAdmin={ true }>
+          <Layout>
+            <AdminDashboard />
+          </Layout>
+        </ProtectedRoute>
       } />
 
       <Route path="*" element={ <NotFoundPage /> } />

@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../../contexts/AuthContext';
 
 const LoginForm = () => {
@@ -6,6 +7,7 @@ const LoginForm = () => {
     const [ password, setPassword ] = useState('');
     const [ loading, setLoading ] = useState(false);
     const { login } = useAuth();
+    const navigate = useNavigate();
 
     const handleSubmit = async (e) => {
         e.preventDefault();
@@ -13,7 +15,9 @@ const LoginForm = () => {
 
         const result = await login(employeeId, password);
 
-        if (!result.success) {
+        if (result.success) {
+            navigate('/');
+        } else {
             alert(result.error || 'Erreur de connexion');
         }
 
