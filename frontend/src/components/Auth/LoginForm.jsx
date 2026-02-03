@@ -37,7 +37,7 @@ const LoginForm = () => {
                                         <i className="bi bi-shield-lock text-white fs-3"></i>
                                     </div>
                                     <h2 className="fw-bold text-securs-blue">Sécuris</h2>
-                                    <p className="text-body-emphasis">Système de pointage sécurisé Leon Hotel</p>
+                                    <p className="fw-bold">Système de pointage sécurisé Leon Hotel</p>
                                 </div>
 
                                 {/* Formulaire */ }
@@ -96,7 +96,7 @@ const LoginForm = () => {
                                     <div className="mt-3 text-center">
                                         <span className="badge bg-info">
                                             <i className="bi bi-phone me-1"></i>
-                                            Optimisé mobile
+                                            BY KSK CONSULTING
                                         </span>
                                     </div>
                                 </div>

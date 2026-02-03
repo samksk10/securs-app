@@ -108,15 +108,15 @@ const QRGenerator = () => {
           <div class="info">
             <p><strong>Date:</strong> ${ todayQR.date }</p>
             <p><strong>Valide de:</strong> ${ todayQR.validFrom } à ${ todayQR.validTo }</p>
-            <p><strong>Hôtel Leon Kinshasa</strong></p>
+            <p><strong>Leon Hôtel Kinshasa</strong></p>
           </div>
           <img src="${ todayQR.qrCode }" style="width: 300px; height: 300px;" />
           <div class="instructions">
             <h3>Instructions:</h3>
             <ol>
-              <li>Afficher ce QR code dans la zone de ronde</li>
+              <li>Afficher ce QR code dans les zones de ronde</li>
               <li>Les agents scanneront ce code pour pointer</li>
-              <li>Valide uniquement le ${ todayQR.date } de ${ todayQR.validFrom } à ${ todayQR.validTo }</li>
+              <li>Ce code est valide uniquement le ${ todayQR.date } de ${ todayQR.validFrom } à ${ todayQR.validTo }</li>
             </ol>
           </div>
         </body>

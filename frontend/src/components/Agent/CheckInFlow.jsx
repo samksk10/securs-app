@@ -235,7 +235,7 @@ const CheckInFlow = () => {
                         </div>
                         <div className="col-md-6 text-md-end">
                             <small className="text-muted">
-                                Maximum 2 pointages par jour
+                                Minimum 2 pointages par jour
                             </small>
                         </div>
                     </div>
