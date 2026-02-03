@@ -5,6 +5,7 @@ import Navbar from './components/Layout/Navbar';
 import LoginPage from './pages/LoginPage';
 import AgentDashboard from './pages/AgentDashboard';
 import AdminDashboard from './pages/AdminDashboard';
+import CheckIn from './pages/CheckIn';
 import NotFoundPage from './pages/NotFoundPage';
 
 // Composant pour la redirection automatique
@@ -44,6 +45,14 @@ const AppContent = () => {
         <ProtectedRoute>
           <Layout>
             <AgentDashboard />
+          </Layout>
+        </ProtectedRoute>
+      } />
+
+      <Route path="/checkin" element={
+        <ProtectedRoute>
+          <Layout>
+            <CheckIn />
           </Layout>
         </ProtectedRoute>
       } />

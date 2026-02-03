@@ -87,19 +87,19 @@ const AdminDashboard = () => {
                                 <div className="card-body">
                                     <h2 className="h5 fw-bold mb-3">Actions rapides</h2>
                                     <div className="d-grid gap-2">
-                                        <button className="btn btn-primary w-100 py-2 d-flex align-items-center justify-content-center">
+                                        <button className="btn btn-primary w-100 py-2 d-flex align-items-center justify-content-center" onClick={ () => setActiveTab('agents') }>
                                             <Users className="me-2" />
                                             <span>Gérer les agents</span>
                                         </button>
-                                        <button className="btn btn-success w-100 py-2 d-flex align-items-center justify-content-center">
+                                        <button className="btn btn-success w-100 py-2 d-flex align-items-center justify-content-center" onClick={ () => setActiveTab('qr') }>
                                             <Clock className="me-2" />
                                             <span>Générer QR code du jour</span>
                                         </button>
-                                        <button className="btn btn-warning w-100 py-2 d-flex align-items-center justify-content-center">
+                                        <button className="btn btn-warning w-100 py-2 d-flex align-items-center justify-content-center" onClick={ () => alert('Fonctionnalité à implémenter : voir les incidents') }>
                                             <AlertTriangle className="me-2" />
                                             <span>Voir les incidents</span>
                                         </button>
-                                        <button className="btn btn-secondary w-100 py-2 d-flex align-items-center justify-content-center">
+                                        <button className="btn btn-secondary w-100 py-2 d-flex align-items-center justify-content-center" onClick={ () => downloadExcel([], 'export-admin') }>
                                             <Download className="me-2" />
                                             <span>Exporter les données</span>
                                         </button>

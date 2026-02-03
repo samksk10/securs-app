@@ -4,18 +4,39 @@ import { Clock, AlertCircle, CheckCircle } from 'lucide-react';
 import QRScanner from '../components/Agent/QRScanner';
 import CheckInFlow from '../components/Agent/CheckInFlow';
 import { useEffect, useState } from 'react';
-import axios from 'axios';
+import api from '../services/api';
 
 const AgentDashboard = () => {
     const { user, isAuthenticated } = useAuth();
     const navigate = useNavigate();
     const [ apiError, setApiError ] = useState(null);
+    const [ stats, setStats ] = useState({ rounds: '0/2', status: 'En service', incidents: 0 });
+    const [ loading, setLoading ] = useState(true);
 
     // Rediriger vers login si l'utilisateur se déconnecte
     useEffect(() => {
         if (!isAuthenticated) {
             navigate('/login', { replace: true });
+            return;
         }
+
+        const fetchStats = async () => {
+            try {
+                const response = await api.get('/agent/dashboard-stats');
+                setStats({
+                    rounds: `${ response.data.data.completedRounds }/${ response.data.data.totalRounds }`,
+                    status: response.data.data.status,
+                    incidents: response.data.data.incidents
+                });
+            } catch (error) {
+                console.error('Failed to fetch stats:', error);
+                // Keep default values on error
+            } finally {
+                setLoading(false);
+            }
+        };
+
+        fetchStats();
     }, [ isAuthenticated, navigate ]);
 
     // Écouter l'événement de déconnexion
@@ -44,9 +65,9 @@ const AgentDashboard = () => {
             // ignore - fallback to localhost
         }
 
-        axios.defaults.baseURL = baseURL;
+        api.defaults.baseURL = baseURL;
 
-        const interceptor = axios.interceptors.response.use(
+        const interceptor = api.interceptors.response.use(
             (response) => response,
             (error) => {
                 console.error('API Error:', error);
@@ -56,8 +77,12 @@ const AgentDashboard = () => {
                 return Promise.reject(error);
             }
         );
-        return () => axios.interceptors.response.eject(interceptor);
+        return () => api.interceptors.response.eject(interceptor);
     }, []);
+
+    if (loading) {
+        return <div className="container py-4 text-center">Chargement...</div>;
+    }
 
     return (
         <div className="container py-4">
@@ -86,7 +111,7 @@ const AgentDashboard = () => {
                             </div>
                             <div className="ms-3">
                                 <h6 className="mb-1 fw-semibold">Pointage</h6>
-                                <div className="h4 fw-bold mb-0">0/2</div>
+                                <div className="h4 fw-bold mb-0">{ stats.rounds }</div>
                                 <small className="text-muted">Rondes aujourd'hui</small>
                             </div>
                         </div>
@@ -101,7 +126,7 @@ const AgentDashboard = () => {
                             </div>
                             <div className="ms-3">
                                 <h6 className="mb-1 fw-semibold">Statut</h6>
-                                <div className="h4 fw-bold mb-0">En service</div>
+                                <div className="h4 fw-bold mb-0">{ stats.status }</div>
                                 <small className="text-muted">Prêt pour la ronde</small>
                             </div>
                         </div>
@@ -116,7 +141,7 @@ const AgentDashboard = () => {
                             </div>
                             <div className="ms-3">
                                 <h6 className="mb-1 fw-semibold">Incidents</h6>
-                                <div className="h4 fw-bold mb-0">0</div>
+                                <div className="h4 fw-bold mb-0">{ stats.incidents }</div>
                                 <small className="text-muted">Signalés aujourd'hui</small>
                             </div>
                         </div>
