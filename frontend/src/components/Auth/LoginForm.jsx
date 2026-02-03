@@ -37,7 +37,7 @@ const LoginForm = () => {
                                         <i className="bi bi-shield-lock text-white fs-3"></i>
                                     </div>
                                     <h2 className="fw-bold text-securs-blue">Sécuris</h2>
-                                    <p className="text-muted">Système de pointage sécurisé</p>
+                                    <p className="text-body-emphasis">Système de pointage sécurisé Leon Hotel</p>
                                 </div>
 
                                 {/* Formulaire */ }
