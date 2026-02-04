@@ -38,7 +38,7 @@ api.interceptors.response.use(
 // Ajouter ces fonctions
 export const getDetailedHistory = async (queryParams = '') => {
     try {
-        const response = await fetch(`${ API_URL }/checkins/detailed-history?${ queryParams }`, {
+        const response = await fetch(`${ API_URL }/checkin/detailed-history?${ queryParams }`, {
             headers: {
                 'Authorization': `Bearer ${ localStorage.getItem('token') }`
             }
@@ -73,4 +73,11 @@ export const exportCheckInsToExcel = async (filters = {}) => {
         console.error('Erreur export:', error);
     }
 };
+
+// Fonctions pour la gestion des agents
+export const getAgents = () => api.get('/users/agents');
+export const createAgent = (data) => api.post('/users/agents', data);
+export const updateAgent = (id, data) => api.put(`/users/agents/${ id }`, data);
+export const deleteAgent = (id) => api.delete(`/users/agents/${ id }`);
+
 export default api;

@@ -6,6 +6,7 @@ import { useAuth } from '../contexts/AuthContext';
 import { Users, Clock, AlertTriangle, Download } from 'lucide-react';
 import QRGenerator from '../components/Admin/QRGenerator';
 import DetailedHistory from '../components/Admin/DetailedHistory';
+import AgentManagement from '../components/Admin/AgentManagement';
 
 const AdminDashboard = () => {
     const { user, isAuthenticated } = useAuth();
@@ -132,10 +133,9 @@ const AdminDashboard = () => {
                 </Tab>
 
                 <Tab eventKey="agents" title="Gestion Agents">
-                    <div className="card card-securs p-3">
+                    <div className="card card-securs">
                         <div className="card-body">
-                            {/* placeholder: keep or replace with actual agent management component */ }
-                            <button className="btn btn-primary">Gérer les agents</button>
+                            <AgentManagement />
                         </div>
                     </div>
                 </Tab>
