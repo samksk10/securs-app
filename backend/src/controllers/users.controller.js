@@ -73,7 +73,7 @@ const createAgent = async (req, res) => {
 
         const result = await client.query(
             'INSERT INTO users (employee_id, full_name, email, phone, password_hash, user_role) VALUES ($1, $2, $3, $4, $5, $6) RETURNING id, employee_id, full_name, email, phone, user_role, created_at',
-            [ employeeId, fullName, email, phone, passwordHash, 'agent' ]
+            [ employeeId.toUpperCase(), fullName, email, phone, passwordHash, 'agent' ]
         );
 
         await client.end();
