@@ -1,12 +1,13 @@
 import { Navigate } from 'react-router-dom';
 import { useAuth } from '../contexts/AuthContext';
 import LoginForm from '../components/Auth/LoginForm';
+import LoadingSpinner from '../components/Common/LoadingSpinner';
 
 const LoginPage = () => {
     const { user, loading } = useAuth();
 
     if (loading) {
-        return <div>Chargement...</div>;
+        return <LoadingSpinner size="lg" />;
     }
 
     if (user) {
