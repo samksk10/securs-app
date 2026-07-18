@@ -1,0 +1,142 @@
+Server [localhost]:
+Database [postgres]:
+Port [5432]:
+Username [postgres]:
+Mot de passe pour l'utilisateur postgres :
+
+psql (18.0)
+Saisissez « help » pour l'aide.
+
+postgres=# \l
+                                                                    Liste des bases de données
+    Nom     | Propriétaire | Encodage | Fournisseur de locale |     Collationnement     |      Type caract.       | Locale | Règles ICU : |    Droits d'accès
+------------+--------------+----------+-----------------------+-------------------------+-------------------------+--------+--------------+-----------------------
+ postgres   | postgres     | UTF8     | libc                  | French_Congo (DRC).utf8 | French_Congo (DRC).utf8 |        |              |
+ securis_db | postgres     | UTF8     | libc                  | French_Congo (DRC).utf8 | French_Congo (DRC).utf8 |        |              |
+ template0  | postgres     | UTF8     | libc                  | French_Congo (DRC).utf8 | French_Congo (DRC).utf8 |        |              | =c/postgres          +
+            |              |          |                       |                         |                         |        |              | postgres=CTc/postgres
+ template1  | postgres     | UTF8     | libc                  | French_Congo (DRC).utf8 | French_Congo (DRC).utf8 |        |              | =c/postgres          +
+            |              |          |                       |                         |                         |        |              | postgres=CTc/postgres
+(4 lignes)
+
+
+postgres=# \c securis_db
+Vous êtes maintenant connecté à la base de données « securis_db » en tant qu'utilisateur « postgres ».
+securis_db=# \dt
+              Liste des tables
+ Schéma |     Nom     | Type  | Propriétaire
+--------+-------------+-------+--------------
+ public | alerts      | table | postgres
+ public | check_ins   | table | postgres
+ public | incidents   | table | postgres
+ public | qr_codes    | table | postgres
+ public | user_alerts | table | postgres
+ public | users       | table | postgres
+(6 lignes)
+
+
+securis_db=# \c users
+la connexion au serveur sur « localhost » (::1), port 5432 a échoué : FATAL:  la base de données « users » n'existe pas
+Connexion précédente conservée
+securis_db=# select from users
+securis_db-# \dt
+              Liste des tables
+ Schéma |     Nom     | Type  | Propriétaire
+--------+-------------+-------+--------------
+ public | alerts      | table | postgres
+ public | check_ins   | table | postgres
+ public | incidents   | table | postgres
+ public | qr_codes    | table | postgres
+ public | user_alerts | table | postgres
+ public | users       | table | postgres
+(6 lignes)
+
+
+securis_db-# SELECT * FROM users
+securis_db-# SELECT * FROM users;
+ERREUR:  erreur de syntaxe sur ou près de « SELECT »
+LIGNE 2 : SELECT * FROM users
+          ^
+securis_db=# ;
+securis_db=# SELECT * FROM users;
+ id | employee_id |        full_name         |        email        |     phone     |                        password_hash                         | user_role | face_encoding | photo_url | is_active |         created_at         |         updated_at
+----+-------------+--------------------------+---------------------+---------------+--------------------------------------------------------------+-----------+---------------+-----------+-----------+----------------------------+----------------------------
+  3 | ADMIN001    | Administrateur Principal | admin@securis.com   |               | $2a$10$tlnOig9A4FG6F0Je.9dYVeNTPeCQjwRb7usbduP/soeIFHmLYHcDS | admin     |               |           | t         | 2026-01-03 01:20:57.979699 | 2026-01-03 01:20:57.979699
+  4 | AGENT001    | Jean Kabasele            | jean@securis.com    | +243810000001 | $2a$10$8BmV4GMv7FlcDlGHJlC3Deu.d.uh6lNQ824GcQ2FQedy84sOc780m | agent     |               |           | t         | 2026-01-03 01:20:58.122891 | 2026-01-03 01:20:58.122891
+  5 | AGENT002    | Marie Lukunku            | marie@securis.com   | +243810000002 | $2a$10$jinrfzIBeAgjf3Rjbcn/.eXvvLmuq1.DpIv2LjeOL61pN.yTPddpi | agent     |               |           | f         | 2026-01-03 01:20:58.288073 | 2026-01-03 01:20:58.288073
+  6 | AGENT003    | Paul Mbuta               | paul@securis.com    | +243810000003 | $2a$10$pbh4JXnbdiHd1brDX/Mu/eE2lutsq3MFDSZ04YAy75FiCE59YVOY6 | agent     |               |           | f         | 2026-01-03 01:20:58.448149 | 2026-01-03 01:20:58.448149
+  7 | AGENT004    | kisenge kapungu          | kisenge@securis.com | 0811641927    | $2a$10$Au394YuJdyMawGKymHGbN.39yo.JTIWN7yj.IDCFRkNQuSLkS/pge | agent     |               |           | t         | 2026-02-04 01:25:21.729262 | 2026-02-04 01:25:21.729262
+(5 lignes)
+
+
+securis_db=# SELECT employee_id FROM users WHERE LOWER(employee_id) = 'agent004';
+ employee_id
+-------------
+ AGENT004
+(1 ligne)
+
+
+securis_db=# SELECT employee_id, password_hash
+securis_db-# FROM users
+securis_db-# WHERE employee_id = 'AGENT004';
+ employee_id |                        password_hash
+-------------+--------------------------------------------------------------
+ AGENT004    | $2a$10$Au394YuJdyMawGKymHGbN.39yo.JTIWN7yj.IDCFRkNQuSLkS/pge
+(1 ligne)
+
+
+securis_db=# SELECT * FROM users;
+ id | employee_id |        full_name         |        email        |     phone     |                        password_hash                         | user_role | face_encoding | photo_url | is_active |         created_at         |         updated_at
+----+-------------+--------------------------+---------------------+---------------+--------------------------------------------------------------+-----------+---------------+-----------+-----------+----------------------------+----------------------------
+  3 | ADMIN001    | Administrateur Principal | admin@securis.com   |               | $2a$10$tlnOig9A4FG6F0Je.9dYVeNTPeCQjwRb7usbduP/soeIFHmLYHcDS | admin     |               |           | t         | 2026-01-03 01:20:57.979699 | 2026-01-03 01:20:57.979699
+  4 | AGENT001    | Jean Kabasele            | jean@securis.com    | +243810000001 | $2a$10$8BmV4GMv7FlcDlGHJlC3Deu.d.uh6lNQ824GcQ2FQedy84sOc780m | agent     |               |           | t         | 2026-01-03 01:20:58.122891 | 2026-01-03 01:20:58.122891
+  5 | AGENT002    | Marie Lukunku            | marie@securis.com   | +243810000002 | $2a$10$jinrfzIBeAgjf3Rjbcn/.eXvvLmuq1.DpIv2LjeOL61pN.yTPddpi | agent     |               |           | f         | 2026-01-03 01:20:58.288073 | 2026-01-03 01:20:58.288073
+  6 | AGENT003    | Paul Mbuta               | paul@securis.com    | +243810000003 | $2a$10$pbh4JXnbdiHd1brDX/Mu/eE2lutsq3MFDSZ04YAy75FiCE59YVOY6 | agent     |               |           | f         | 2026-01-03 01:20:58.448149 | 2026-01-03 01:20:58.448149
+  7 | AGENT004    | kisenge kapungu          | kisenge@securis.com | +243811641927 | $2a$10$Au394YuJdyMawGKymHGbN.39yo.JTIWN7yj.IDCFRkNQuSLkS/pge | agent     |               |           | t         | 2026-02-04 01:25:21.729262 | 2026-02-04 01:25:21.729262
+(5 lignes)
+
+
+securis_db=# select from alerts
+securis_db-# SELECT * FROM alerts;
+ERREUR:  erreur de syntaxe sur ou près de « SELECT »
+LIGNE 2 : SELECT * FROM alerts;
+          ^
+securis_db=# SELECT * FROM users;
+ id | employee_id |        full_name         |        email        |     phone     |                        password_hash                         | user_role | face_encoding | photo_url | is_active |         created_at         |         updated_at
+----+-------------+--------------------------+---------------------+---------------+--------------------------------------------------------------+-----------+---------------+-----------+-----------+----------------------------+----------------------------
+  3 | ADMIN001    | Administrateur Principal | admin@securis.com   |               | $2a$10$tlnOig9A4FG6F0Je.9dYVeNTPeCQjwRb7usbduP/soeIFHmLYHcDS | admin     |               |           | t         | 2026-01-03 01:20:57.979699 | 2026-01-03 01:20:57.979699
+  4 | AGENT001    | Jean Kabasele            | jean@securis.com    | +243810000001 | $2a$10$8BmV4GMv7FlcDlGHJlC3Deu.d.uh6lNQ824GcQ2FQedy84sOc780m | agent     |               |           | t         | 2026-01-03 01:20:58.122891 | 2026-01-03 01:20:58.122891
+  5 | AGENT002    | Marie Lukunku            | marie@securis.com   | +243810000002 | $2a$10$jinrfzIBeAgjf3Rjbcn/.eXvvLmuq1.DpIv2LjeOL61pN.yTPddpi | agent     |               |           | f         | 2026-01-03 01:20:58.288073 | 2026-01-03 01:20:58.288073
+  6 | AGENT003    | Paul Mbuta               | paul@securis.com    | +243810000003 | $2a$10$pbh4JXnbdiHd1brDX/Mu/eE2lutsq3MFDSZ04YAy75FiCE59YVOY6 | agent     |               |           | f         | 2026-01-03 01:20:58.448149 | 2026-01-03 01:20:58.448149
+  7 | AGENT004    | kisenge kapungu          | kisenge@securis.com | +243811641927 | $2a$10$Au394YuJdyMawGKymHGbN.39yo.JTIWN7yj.IDCFRkNQuSLkS/pge | agent     |               |           | t         | 2026-02-04 01:25:21.729262 | 2026-02-04 01:25:21.729262
+(5 lignes)
+
+
+securis_db=# SELECT * FROM alerts;
+ id | title | message | type | sent_by_id | sent_to_all | created_at
+----+-------+---------+------+------------+-------------+------------
+(0 ligne)
+
+
+securis_db=# SELECT * FROM check_ins;
+ id | user_id | qr_code_id | check_in_time | location | face_match_confidence | status | photo_url | validated_by_id | validated_at | created_at
+----+---------+------------+---------------+----------+-----------------------+--------+-----------+-----------------+--------------+------------
+(0 ligne)
+
+
+securis_db=# SELECT * FROM incidents;
+ id | user_id | title | description | type | severity | location | status | photo_urls | created_at | resolved_at
+----+---------+-------+-------------+------+----------+----------+--------+------------+------------+-------------
+(0 ligne)
+
+
+securis_db=# SELECT * FROM qr_codes;
+ id |    date    |                token                |                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                      qr_code_data                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                      | is_active | valid_from | valid_to |         created_at
+----+------------+-------------------------------------+----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------Requête d'annulation envoyée
+securis_db=# SELECT * FROM user_alerts;
+ id | user_id | alert_id | is_read | read_at
+----+---------+----------+---------+---------
+(0 ligne)
+
+
+securis_db=#

@@ -1,0 +1,55 @@
+Server [localhost]: localhost
+Database [postgres]: postgres
+Port [5432]: 5432
+Username [postgres]: postgres
+Mot de passe pour l'utilisateur postgres :
+
+psql (18.0)
+Saisissez « help » pour l'aide.
+
+postgres=#
+postgres=# \l
+                                                                   Liste des bases de données
+    Nom    | Propriétaire | Encodage | Fournisseur de locale |     Collationnement     |      Type caract.       | Locale | Règles ICU : |    Droits d'accès
+-----------+--------------+----------+-----------------------+-------------------------+-------------------------+--------+--------------+-----------------------
+ postgres  | postgres     | UTF8     | libc                  | French_Congo (DRC).utf8 | French_Congo (DRC).utf8 |        |              |
+ template0 | postgres     | UTF8     | libc                  | French_Congo (DRC).utf8 | French_Congo (DRC).utf8 |        |              | =c/postgres          +
+           |              |          |                       |                         |                         |        |              | postgres=CTc/postgres
+ template1 | postgres     | UTF8     | libc                  | French_Congo (DRC).utf8 | French_Congo (DRC).utf8 |        |              | =c/postgres          +
+           |              |          |                       |                         |                         |        |              | postgres=CTc/postgres
+(3 lignes)
+
+
+postgres=# CREATE DATABASE securis_db;
+CREATE DATABASE
+postgres=# \c securis_db;
+Vous êtes maintenant connecté à la base de données « securis_db » en tant qu'utilisateur « postgres ».
+securis_db=# \dt
+N'a pas trouvé de tables.
+securis_db=# cls
+securis_db-# SELECT 'Connexion OK' AS status;
+ERREUR:  erreur de syntaxe sur ou près de « cls »
+LIGNE 1 : cls
+          ^
+securis_db=# SELECT 'Connexion OK' AS status;
+    status
+--------------
+ Connexion OK
+(1 ligne)
+
+
+securis_db=# psql -U postgres -c "\l"
+securis_db-# \dt
+              Liste des tables
+ Schéma |     Nom     | Type  | Propriétaire
+--------+-------------+-------+--------------
+ public | alerts      | table | postgres
+ public | check_ins   | table | postgres
+ public | incidents   | table | postgres
+ public | qr_codes    | table | postgres
+ public | user_alerts | table | postgres
+ public | users       | table | postgres
+(6 lignes)
+
+
+securis_db-#
